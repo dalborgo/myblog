@@ -3,7 +3,8 @@
         "sSearch": "Cerca:",
         "sEmptyTable": "Nessun torneo in corso",
 	   "sInfoEmpty": "Caricamento...",
-	   "sLoadingRecords" : "Caricamento...",
+	   "sLoadingRecords" : "Caricamento Giocatori...",
+	   "sProcessing" : "<img src='./media/images/loader.gif'>",
  "oPaginate": {
                                         "sFirst":    "  <<  ",
                                         "sPrevious": " < ",

@@ -10,3 +10,11 @@ function dammiData($d){
     $datec->setTimezone(new DateTimeZone('Europe/Rome'));
     return $datec->format('d/m/Y');
 }
+
+function prog()
+{
+    $datec = new DateTime();
+    $datec->setTimezone(new DateTimeZone('Europe/Rome'));
+    $prog = $datec->format('z');
+    return $prog;
+}

@@ -8,13 +8,15 @@
 require_once "librerie/fetch.php";
 require_once "librerie/date.php";
 require_once "librerie/sql.php";
-
 header('Content-Type: application/json');
 $res = query("SELECT * from aa_player WHERE abil IS NULL");
+$ert=prog()-1;
+$res2 = query("SELECT * from blog WHERE prog >= $ert ");
 $r=0;
 $lista2="";
 $status = array();
 $squadra = array();
+$vecchi = array();
 while (($ra = mysql_fetch_assoc($res))) {
     $val = $ra["nick"];
     $status[$val] = $ra["status"];
@@ -22,6 +24,13 @@ while (($ra = mysql_fetch_assoc($res))) {
 
     $r++;
     $lista2.="network$r=PlayerGroup&player$r=$val&";
+}
+
+while (($ras = mysql_fetch_assoc($res2))) {
+    $objA = new stdClass();
+    $objA->id = $ras["id"];
+    $objA->elim = $ras["eliminato"];
+    $vecchi[$objA->id] = $objA;
 }
 $lista2=substr($lista2,0,-1);
 $service_url = 'http://www.sharkscope.com/api/dalborgo/activeTournaments?'.$lista2;
@@ -51,21 +60,26 @@ foreach ($ltot as $key => $gioc2) {
         $obj->formUsc = '[img]http://www.dalborgo.it/public/ss/' . $obj->status . '.png[/img] [url=http://it.pokerstrategy.com/user/' . $obj->nick . '/profile/][size=22][b]' . $obj->nick . '[/b][/size][/url]';
         $obj->sqUsc='[img]http://www.dalborgo.com/ryder/media/images/'.$obj->squadra.'_flag.gif[/img] [size=22][color=#690000][b]Team USA[/b][/color][/size]';
     }
-    else {
+    else if($obj->squadra=="eu"){
         $obj->formUsc = '[img]http://www.dalborgo.it/public/ss/' . $obj->status . '.png[/img] [url=http://it.pokerstrategy.com/user/' . $obj->nick . '/profile/][size=22][b]' . $obj->nick . '[/b][/size][/url]';
-        $obj->sqUsc='[img]http://www.dalborgo.com/ryder/media/images/'.$obj->squadra.'_flag.gif[/img] [size=22][color=#1F4594][b]Team USA[/b][/color][/size]';
+        $obj->sqUsc='[img]http://www.dalborgo.com/ryder/media/images/'.$obj->squadra.'_flag.gif[/img] [size=22][color=#1F4594][b]Team EUROPE[/b][/color][/size]';
+    }else{
+        $obj->sqf='';
+        $obj->formUsc = '[img]http://www.dalborgo.it/public/ss/' . $obj->status . '.png[/img] [url=http://it.pokerstrategy.com/user/' . $obj->nick . '/profile/][size=22][b]' . $obj->nick . '[/b][/size][/url]';
+        $obj->sqUsc='';
     }
     $cont=0;
     foreach ($gioc2->PlayerGroup->ActiveTournaments->Tournament as $key => $value) {
         $butt="";
         $cf="";
-        $cont++;
         $obj2 = new stdClass();
         if (count($gioc2->PlayerGroup->ActiveTournaments->Tournament)<2)
             $value=$gioc2->PlayerGroup->ActiveTournaments->Tournament;
         if($value->{'@gameClass'}!="scheduled" || ($value->{'@state'}!="Running" && $value->{'@state'}!="Late Registration"))
-        continue;
-            //if($value->{'@gameClass'}!="scheduled" || $value->{'@state'}!="Registering")
+            continue;
+//if($value->{'@gameClass'}!="scheduled" || $value->{'@state'}!="Registering")
+        $cont++;
+
 
 
 
@@ -79,6 +93,12 @@ foreach ($ltot as $key => $gioc2) {
         }
         $obj2->nictav='[size=18]'.$value->TournamentEntry->Player->{'@name'}.'[/size]';
         $obj2->data=$datec;
+        $ftu=$obj->nick.$value->{'@id'};
+        if(array_key_exists($ftu,$vecchi)){
+            $obj2->elim = $vecchi[$ftu]->elim;
+        }else
+            $obj2->elim=0;
+
         if($value->{'@network'}=="PokerStars.it") {
             $nomepul=$value->{'@name'};
             $nome = "<span><a href='pokerstarsit://tournament/" . $value->{'@id'} . "/'>" . $value->{'@name'} . "</a></span>";
