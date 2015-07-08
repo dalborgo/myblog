@@ -44,6 +44,7 @@
             creaOu(n);
         }
         function creaRes(n,i,t){
+
             r=(!isNaN(t.value))?t.value:'';
             r=(r<hack[n][i].pos)?hack[n][i].pos:r;
             hack[n][i].res= r;
