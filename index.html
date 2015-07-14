@@ -37,21 +37,50 @@
     </style>
     <script type="text/javascript" language="javascript" class="init">
         var output="";
+        var output2="";
+        //var cona=0;
         var hack=new Array();
         var elimi=new Array();
-        function canc(i){
-            if($('.'+i).css("opacity")<1) {
-                $('.' + i).fadeTo("fast", 1, function() {
-                    $('#b' + i).text('Togli');
-                    salva(i,0);
-                });
+        var tros=new Array();
+      /*  function accu(n){
+            for (var obj in tros) {
+                output2+=tros[obj];
+            }
 
+            cona++;
+            $('#' + n+'3').attr('data-clipboard-text', output2);
+            $('.accumu').text('Accumula ('+cona+')');
+        }
+        function reset(){
+           output2='';
+            cona=0;
+            var tros=new Array();
+            $('.accumu').text('Accumula (0)');
+        }
+        function defi(n){
+
+        }*/
+        function canc2(i){
+            if($('#tr' + i).css("font-weight")=="bold") {
+                $('#tr' + i).css({"background-color": "#fff","font-weight":"normal"});
+                $('#b' + i).text('Segna');
+                salva(i, 0);
+            }else{
+                $('#tr' + i).css({ "background-color": "#FCDB2C","font-weight":"bold"});
+                $('#b' + i).text('Togli');
+                salva(i, 1);
+            }
+        }
+        function canc(i,r){
+            if(r) {
+                    $('#tr' + i).css({ "background-color": "#FCDB2C","font-weight":"bold"});
+                $('#b' + i).text('Togli');
+                    salva(i,1);
             }
             else {
-                $('.' + i).fadeTo("fast", 0.13, function() {
-                    $('#b' + i).text('Vedi');
-                    salva(i,1);
-                });
+                $('#tr' + i).css({"background-color": "#fff","font-weight":"normal"});
+                $('#b' + i).text('Segna');
+                    salva(i,0);
             }
         }
         function salva(i,e){
@@ -79,12 +108,14 @@
         function creaPos(n,i,t){
             r=(!isNaN(t.value))?t.value:'';
             hack[n][i].pos= r;
+            canc(''+n+i,r);
             creaOu(n);
         }
         function creaRes(n,i,t){
         re= (!isNaN(t.value))?t.value:'';
-            re=(re<hack[n][i].pos)?hack[n][i].pos:re;
+            re=(parseInt(re)<parseInt(hack[n][i].pos))?hack[n][i].pos:re;
             hack[n][i].res= re;
+            canc(''+n+i,r);
             creaOu(n);
         }
         function creaSoldi(n,i,t){
@@ -93,6 +124,7 @@
                 hack[n][i].soldi= '';
             }else
                 hack[n][i].soldi= t.value;
+            canc(''+n+i,r);
             creaOu(n);
         }
         function vai(){
@@ -103,6 +135,7 @@
         }
         function creaOu(n) {
             output = "";
+            output2 = "";
             yu = 0;
             duo = 0;
             chiul = 0;
@@ -114,12 +147,11 @@
                     ecco2=('0'+local.getMinutes()).substr(-2);
                     var localdatetime = ecco + ":" + ecco2;
                     ora ='[size=18][b]'+localdatetime+'[/B][/size]';
-                    output +=oi.sqUsc+' ('+ora+')\n' + oi.formUsc;
+                    output +=oi.sqUsc+' ('+ora+')\n' + oi.formUsc +'\n\n';
                     yu = 1;
 
                 }
-                if ((elimi[n+obj].elim==0) && (oi.pos != "" || oi.soldi != "")) {
-                    output +=' (' + oi.nictav + ')\n\n';
+                if ((elimi[n+obj].elim==1) && (oi.pos != "" || oi.soldi != "")) {
                     if(duo==0) {
                         output += '[list]';
                         duo=1;
@@ -133,40 +165,45 @@
 
                     if (oi.soldi != "") {
                         if(oi.pos!="")
-                            output += '[B][size=22]FINITO:[color=#FF8400] ' + oi.pos +'\u00B0 - \u20AC' + oi.soldi + '[/color][/size][/B]\n\n';
+                            output += '[B][size=22]FINITO:[color=#FF8400] ' + oi.pos +'\u00B0 - \u20AC' + oi.soldi + '[/color][/size][/B]';
                         else
-                            output += '[B][size=22]FINITO:[color=#FF8400] \u20AC' + oi.soldi + '[/color][/size][/B]\n\n';
+                            output += '[B][size=22]FINITO:[color=#FF8400] \u20AC' + oi.soldi + '[/color][/size][/B]';
 
                     } else {
                         if(oi.res!="")
-                            output += '[B][size=22]' + oi.pos + ' / ' + oi.res + '[/size][/B]\n\n';
+                            output += '[B][size=22]' + oi.pos + ' / ' + oi.res + '[/size][/B]';
                         else
-                            output += '[B][size=22]' + oi.pos +'\u00B0[/size][/B]\n\n';
+                            output += '[B][size=22]' + oi.pos +'\u00B0[/size][/B]';
                     }
+                    output +=' (' + oi.nictav + ')\n\n';
                 }
             }
             if(chiul==1)
                 output+="[/list]";
             $('#' + n).attr('data-clipboard-text', output);
             $('#' + n+'2').attr('data-clipboard-text', output);
+            tros[n]=output;
+            for (var obj in tros) {
+                output2+=tros[obj]+'\n';
+            }
+            $('#' + n+'3').attr('data-clipboard-text', output2);
         }
         function format (d) {
             var hus=new Array();
             nj=d.nick;
-
             var ost = '<div class="slider"><table class="display sotto" cellspacing="0" border="0" style="width:100%">';
             ost+='<thead><tr><th>Data</th><th>Nome</th><th>Poker Room</th><th>&euro; Buyin</th><th>Pos/Res</th><th>&euro; Soldi</th><th></th></tr></thead>';
             for (ind = 0; ind < d.partite.length; ind++) {
                 stri=d.nick+d.partite[ind].id;
                 elimi[stri]={elim:d.partite[ind].elim,id:d.partite[ind].id,nick: d.nick};
-                ost+='<tr>'+
+                ost+='<tr id="tr'+stri+'">'+
                     '<td class="'+stri+'">'+d.partite[ind].data+'</td>'+
                     '<td class="'+stri+'">'+d.partite[ind].nome+'</td>'+
                     '<td class="'+stri+'">'+d.partite[ind].net+'</td>'+
                     '<td class="sright '+stri+'">'+d.partite[ind].buyin+'</td>'+
-                    '<td class="center '+stri+'"><input id="pos'+stri+'" type="text" size="4" onchange="creaPos(\''+nj+'\','+d.partite[ind].id+',this)"> / <input type="text" id="res'+stri+'" size="4" onchange="creaRes(\''+nj+'\','+d.partite[ind].id+',this)"></td>'+
-                    '<td class="center '+stri+'"><input id="soldi'+stri+'" type="text" size="6" onchange="creaSoldi(\''+nj+'\','+d.partite[ind].id+',this)" ></td>'+
-                    '<td class="center"><button id="b'+stri+'" onclick="canc(\''+stri+'\')">Togli</button></td>'+
+                    '<td class="center '+stri+'"><input id="pos'+stri+'" type="text" size="4" onblur="creaPos(\''+nj+'\','+d.partite[ind].id+',this)"> / <input type="text" id="res'+stri+'" size="4" onblur="creaRes(\''+nj+'\','+d.partite[ind].id+',this)"></td>'+
+                    '<td class="center '+stri+'"><input id="soldi'+stri+'" type="text" size="6" onblur="creaSoldi(\''+nj+'\','+d.partite[ind].id+',this)" ></td>'+
+                    '<td class="center"><button id="b'+stri+'" onclick="canc2(\''+stri+'\')">Segna</button></td>'+
                     '</tr>';
                     hus[d.partite[ind].id] = { "nome":d.partite[ind].nome, "net":d.partite[ind].net,"nomepul":d.partite[ind].nomepul,"pos":"","res":"","soldi":"","nictav":d.partite[ind].nictav,"formUsc":d.formUsc,"sqUsc":d.sqUsc,"nomeUsc":d.partite[ind].nomeUsc,"linkUsc":d.partite[ind].linkUsc};
             }
@@ -174,7 +211,7 @@
             creaOu(nj);
             //output+=hack[d.nick][1267081278].nomepul;
             //<button onclick="ricarica()">Ricarica</button>
-            ost+='<tr><td></td><td></td><td></td><td></td><td class="center" style=""><button id="'+d.nick+'2" data-clipboard-text="'+output+'" onclick="vai()">Esporta e Vai</button></td><td class="center" style=""><button class="submit-btn" id="'+ d.nick+'" data-clipboard-text="'+output+'">Esporta</button></td><td></td></tr>';
+            ost+='<tr><td></td><td><button class="accumu" id="'+d.nick+'3" data-clipboard-text="">Accumula</button></td><td></td><td></td><td class="center" style=""><button id="'+d.nick+'2" data-clipboard-text="" onclick="vai()">Esporta e Vai</button></td><td class="center" style=""><button class="submit-btn" id="'+ d.nick+'" data-clipboard-text="">Esporta</button></td><td></td></tr>';
             ost+='</table></div>';
 
 
@@ -192,14 +229,10 @@ function hhh(){
         function segna(i) {
 
             for (var obj in i) {
-                if (elimi[obj].elim==0){
-                    $('.' + obj).fadeTo("fast", 1, function () {
-                        $('#b' + obj).text('Togli');
-                    });
-                }else {
-                    $('.' + obj).fadeTo("fast", 0.13, function () {
-                        $('#b' + obj).text('Vedi');
-                    });
+
+                if (elimi[obj].elim==1){
+                    $('#tr' + obj).css({ "background-color": "#FCDB2C","font-weight":"bold"});
+                    $('#b' + obj).text('Togli');
                 }
             }
 
@@ -268,6 +301,7 @@ function hhh(){
                     //alert(row.data().nick);
                     new ZeroClipboard( document.getElementById(row.data().nick));
                     new ZeroClipboard( document.getElementById(row.data().nick+'2'));
+                    new ZeroClipboard( document.getElementById(row.data().nick+'3'));
                     segna(elimi);
                 }
             } );
