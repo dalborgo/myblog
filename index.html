@@ -101,7 +101,7 @@
                         hack[elimi[i].nick][elimi[i].id].res = $('#res' + i).val();
                         hack[elimi[i].nick][elimi[i].id].soldi = $('#soldi' + i).val();
                     }
-                    creaOu(elimi[i].nick);
+                    creaOu(elimi[i].nick,e);
                 }
             })
         }
@@ -109,14 +109,14 @@
             r=(!isNaN(t.value))?t.value:'';
             hack[n][i].pos= r;
             canc(''+n+i,r);
-            creaOu(n);
+            //creaOu(n);
         }
         function creaRes(n,i,t){
         re= (!isNaN(t.value))?t.value:'';
             re=(parseInt(re)<parseInt(hack[n][i].pos))?hack[n][i].pos:re;
             hack[n][i].res= re;
             canc(''+n+i,r);
-            creaOu(n);
+           // creaOu(n);
         }
         function creaSoldi(n,i,t){
             var regex = /^[0-9.,]+$/;
@@ -125,7 +125,7 @@
             }else
                 hack[n][i].soldi= t.value;
             canc(''+n+i,r);
-            creaOu(n);
+            //creaOu(n);
         }
         function vai(){
             window.open(
@@ -180,9 +180,12 @@
             }
             if(chiul==1)
                 output+="[/list]";
+
+                tros[n] = output;
+
             $('#' + n).attr('data-clipboard-text', output);
             $('#' + n+'2').attr('data-clipboard-text', output);
-            tros[n]=output;
+
             for (var obj in tros) {
                 output2+=tros[obj]+'\n';
             }
@@ -208,7 +211,7 @@
                     hus[d.partite[ind].id] = { "nome":d.partite[ind].nome, "net":d.partite[ind].net,"nomepul":d.partite[ind].nomepul,"pos":"","res":"","soldi":"","nictav":d.partite[ind].nictav,"formUsc":d.formUsc,"sqUsc":d.sqUsc,"nomeUsc":d.partite[ind].nomeUsc,"linkUsc":d.partite[ind].linkUsc};
             }
             hack[d.nick]=hus;
-            creaOu(nj);
+
             //output+=hack[d.nick][1267081278].nomepul;
             //<button onclick="ricarica()">Ricarica</button>
             ost+='<tr><td></td><td><button class="accumu" id="'+d.nick+'3" data-clipboard-text="">Accumula</button></td><td></td><td></td><td class="center" style=""><button id="'+d.nick+'2" data-clipboard-text="" onclick="vai()">Esporta e Vai</button></td><td class="center" style=""><button class="submit-btn" id="'+ d.nick+'" data-clipboard-text="">Esporta</button></td><td></td></tr>';
@@ -290,7 +293,11 @@ function hhh(){
 
                 if ( row.child.isShown() ) {
                     // This row is already open - close it
-
+                    tros[row.data().nick]="";
+                    for (var obj in tros) {
+                        output2+=tros[obj]+'\n';
+                    }
+                    //creaOu(row.data().nick);
                     $('div.slider', row.child()).slideUp( function () {                row.child.hide();                tr.removeClass('shown');            } );
 
 
@@ -301,9 +308,11 @@ function hhh(){
                     //alert(row.data().nick);
                     new ZeroClipboard( document.getElementById(row.data().nick));
                     new ZeroClipboard( document.getElementById(row.data().nick+'2'));
-                    new ZeroClipboard( document.getElementById(row.data().nick+'3'));
+                    new ZeroClipboard( document.getElementsByClassName('accumu'));
                     segna(elimi);
+                    creaOu(row.data().nick);
                 }
+
             } );
         } );
     </script>
