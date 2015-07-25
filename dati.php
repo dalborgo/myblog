@@ -125,8 +125,11 @@ foreach ($ltot as $key => $gioc2) {
             $obj2->nomeUsc='[B][color=blue]'.$nomepul.'[/color][/B] - [B]'.$obj2->netUsc.'[/B]';
         }
         else {
+            $obj2->linkUsc="";
+            $nomepul=$value->{'@name'};
             $nome = "<span>" . $value->{'@name'} . "</span>";
             $obj2->net=$value->{'@network'};
+            $obj2->nomeUsc='[B][color=blue]'.$nomepul.'[/color][/B] - [B]'.$value->{'@network'}.'[/B]';
         }
         $obj2->id=$value->{'@id'};
         $obj2->nome=$nome;
